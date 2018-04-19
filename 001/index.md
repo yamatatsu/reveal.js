@@ -2,6 +2,8 @@
 
 - reduxは要らないかもしれない
 - contextAPIはあんまり必要ないかもしれない
+- おまけ
+- おまけ2
 
 ===
 
@@ -27,22 +29,39 @@
 
 ==
 
-トレードオフがあるので、そこを理解して使おうね
+トレードオフがあるので、
 
-===
-
-## reduxの恩恵
+そこを理解して使おうね
 
 ==
 
-**single state &amp; serializable の恩恵**
-- 状態をローカルストレージに永続化して、それをもとに状態の復元を行う
+### 作者が言うreduxの魅力
+
+==
+
+Persist state to a local storage and then boot up from it, out of the box.
+Pre-fill state on the server, send it to the client in HTML, and boot up from it, out of the box.
+Serialize user actions and attach them, together with a state snapshot, to automated bug reports, so that the product developers can replay them to reproduce the errors.
+Pass action objects over the network to implement collaborative environments without dramatic changes to how the code is written.
+Maintain an undo history or implement optimistic mutations without dramatic changes to how the code is written.
+Travel between the state history in development, and re-evaluate the current state from the action history when the code changes, a la TDD.
+Provide full inspection and control capabilities to the development tooling so that product developers can build custom tools for their apps.
+Provide alternative UIs while reusing most of the business logic.
+
+==
+
+### 個人の解釈
+
+==
+
+**状態復元が容易ということ**
+- ローカルストレージに永続化して、それをもとに状態の復元を行う
 - 初期状態をHTMLに埋め込んでおいて、それをもとに状態の初期化を行う
 - エラー時に状態をサーバーに投げつけておくことで再現確認が容易になる
 
 ==
 
-**event store風 &amp; serializable の恩恵**
+**event store風 & serializable の恩恵**
 - actionを投げつけるだけでコラボレーション環境を簡単に作れる
 - undo実装や楽観的更新を簡単に作れる
 - 過去の状態の復元や、コード変更時の状態の再評価
@@ -53,9 +72,9 @@
 **ステートマシンを用意することの恩恵**
 - ビジネスロジックの再利用性によるUI交換のしやすさ
 
-===
+==
 
-#### 個人の感想
+### 個人の感想
 
 ==
 
@@ -97,9 +116,9 @@ redux大好き!!
 > 未解決の問題を解消するためのものだよ。
 > これを使うべきだ、ってものではないんだよ。
 
-===
+==
 
-#### 個人の感想
+### 個人の感想
 
 ==
 
@@ -107,17 +126,11 @@ redux大好き!!
 
 ==
 
-<a href="https://facebook.github.io/relay/">
-<img src="https://i.gyazo.com/f083cd53210f257a4095ba8b32f52f97.png" alt="https://gyazo.com/f083cd53210f257a4095ba8b32f52f97" width="100">
-</a>
-
-===
-
-## じゃあいつcontect API使うんだろ 🤔
+### じゃあいつcontect API使うんだろ 🤔
 
 ==
 
-#### 個人の考え
+### 個人の考え
 
 ==
 
@@ -128,11 +141,11 @@ redux大好き!!
 
 ==
 
-## きっとあります
+## 困ったら使う
 
 ===
 
-## おまけ
+### おまけ
 
 ==
 
@@ -154,7 +167,7 @@ redux大好き!!
 
 ===
 
-おまけ2
+### おまけ2
 
 ==
 
@@ -181,4 +194,5 @@ redux大好き!!
 
 ===
 
-ご清聴ありがとうございました 🙇
+# ご清聴ありがとう
+# ございました 🙇
