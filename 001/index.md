@@ -1,7 +1,7 @@
 ## 目次
 
 - reduxは要らないかもしれない
-- contextAPIはあんまり必要ないかもしれない
+- contextAPIも要らないかもしれない
 - おまけ
 - おまけ2
 
@@ -39,29 +39,29 @@
 
 ==
 
-Persist state to a local storage and then boot up from it, out of the box.
-Pre-fill state on the server, send it to the client in HTML, and boot up from it, out of the box.
-Serialize user actions and attach them, together with a state snapshot, to automated bug reports, so that the product developers can replay them to reproduce the errors.
-Pass action objects over the network to implement collaborative environments without dramatic changes to how the code is written.
-Maintain an undo history or implement optimistic mutations without dramatic changes to how the code is written.
-Travel between the state history in development, and re-evaluate the current state from the action history when the code changes, a la TDD.
-Provide full inspection and control capabilities to the development tooling so that product developers can build custom tools for their apps.
-Provide alternative UIs while reusing most of the business logic.
+- Persist state to a local storage and then boot up from it, out of the box.
+- Pre-fill state on the server, send it to the client in HTML, and boot up from it, out of the box.
+- Serialize user actions and attach them, together with a state snapshot, to automated bug reports, so that the product developers can replay them to reproduce the errors.
+- Pass action objects over the network to implement collaborative environments without dramatic changes to how the code is written.
+- Maintain an undo history or implement optimistic mutations without dramatic changes to how the code is written.
+- Travel between the state history in development, and re-evaluate the current state from the action history when the code changes, a la TDD.
+- Provide full inspection and control capabilities to the development tooling so that product developers can build custom tools for their apps.
+- Provide alternative UIs while reusing most of the business logic.
 
 ==
 
-### 個人の解釈
+### 要約
 
 ==
 
-**状態復元が容易ということ**
+**single state & serializable の恩恵**
 - ローカルストレージに永続化して、それをもとに状態の復元を行う
 - 初期状態をHTMLに埋め込んでおいて、それをもとに状態の初期化を行う
 - エラー時に状態をサーバーに投げつけておくことで再現確認が容易になる
 
 ==
 
-**event store風 & serializable の恩恵**
+**event sourcing風 & serializable の恩恵**
 - actionを投げつけるだけでコラボレーション環境を簡単に作れる
 - undo実装や楽観的更新を簡単に作れる
 - 過去の状態の復元や、コード変更時の状態の再評価
@@ -94,13 +94,13 @@ redux大好き!!
 
 ==
 
-<a href="https://gyazo.com/a7c6eb83d9299b65f2ef09fefac314a8">
+<a href="https://twitter.com/dan_abramov/status/984510107923963904">
 <img src="https://i.gyazo.com/a7c6eb83d9299b65f2ef09fefac314a8.png" alt="https://gyazo.com/a7c6eb83d9299b65f2ef09fefac314a8" width="800">
 </a>
 
 ==
 
-<a href="https://gyazo.com/78fd5ebaeb3b2f7949bfa4879a396719">
+<a href="https://twitter.com/dan_abramov/status/984510107923963904">
 <img src="https://i.gyazo.com/78fd5ebaeb3b2f7949bfa4879a396719.png" alt="https://gyazo.com/78fd5ebaeb3b2f7949bfa4879a396719" width="900">
 </a>
 
@@ -126,11 +126,19 @@ redux大好き!!
 
 ==
 
-### じゃあいつcontect API使うんだろ 🤔
+かく言う私もバリデーションくらいしかしないreactにredux使った過去が。。。。
 
 ==
 
-### 個人の考え
+いやでもあの頃はまだRelayが破壊的変更あったばかりで、ドキュメントがまだ整備されて無くて、調べる限り時期尚早という感が否めなくて
+
+==
+
+# まじごめん 🙇‍
+
+==
+
+### じゃあいつcontect API使うんだろ 🤔
 
 ==
 
@@ -141,7 +149,7 @@ redux大好き!!
 
 ==
 
-## 困ったら使う
+## 😇
 
 ===
 
@@ -161,9 +169,17 @@ redux大好き!!
 
 ==
 
+<a href="https://twitter.com/antmdvs/status/978263584798060544"><img src="https://i.gyazo.com/4a962614fcaaf75a55fba9ff03dbd7e4.png" alt="https://gyazo.com/4a962614fcaaf75a55fba9ff03dbd7e4" width="800"/></a>
+
+==
+
 <a href="https://twitter.com/dan_abramov/status/978269123028373504">
 <img src="https://i.gyazo.com/36a3d041e274d313492def803d47ae21.png" alt="https://gyazo.com/36a3d041e274d313492def803d47ae21" width="800">
 </a>
+
+==
+
+> I’d avoid context in most cases in application code
 
 ===
 
