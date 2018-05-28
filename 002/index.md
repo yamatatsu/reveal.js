@@ -1,9 +1,9 @@
 ## 目次
 
 - やりたかったこと
-- CFn(AWS Cloud Formation)
+- どうやってつくろうか
 - どうなったのか
-- 気になるお値段
+- 反省といろいろ
 
 ===
 
@@ -16,9 +16,9 @@
 
 ===
 
-良さげな記事を発見！！
+始めるきっかけにさせて頂いた記事
 
-<a href="https://qiita.com/lamrongol/items/8c670351ef2b96d4fbb6"><img src="https://i.gyazo.com/d40e3ff2b1fee586284d0a4b3f459865.png" alt="https://gyazo.com/d40e3ff2b1fee586284d0a4b3f459865" width="725"/></a>
+<a href="https://qiita.com/lamrongol/items/8c670351ef2b96d4fbb6" target="_blank"><img src="https://i.gyazo.com/d40e3ff2b1fee586284d0a4b3f459865.png" alt="https://gyazo.com/d40e3ff2b1fee586284d0a4b3f459865" width="725"/></a>
 
 ===
 
@@ -41,7 +41,7 @@ Support Vector Machine
 
 ===
 
-# 😇
+## 😇
 
 ===
 
@@ -91,8 +91,8 @@ const words: string[][] = tweets.map(t => awesomeWakachi(t))
 ```
 
 ```js
-// 辞書(次元の定義)
-const dict: string[] = uniqConcat(words)
+// 各次元への単語の割当表
+const wordIndexes: string[] = uniqConcat(words)
 // ['昨日','良い','日','今日子','ちゃん','今日','カワイイ','雨','明日','晴れる'],
 ```
 
@@ -184,7 +184,7 @@ tokenize('今日子ちゃんは今日もカワイイ')
 ===
 
 ```js
-// ベクトル(辞書のワードの出現数)
+// ベクトル(次元毎のワードの出現数)
 const vectors: number[][] = [
   [1,1,1,0,0,0,0,0,0,0], // 昨日は良い日だったな
   [0,0,0,1,1,1,1,0,0,0], // 今日子ちゃんは今日もカワイイ
@@ -244,12 +244,16 @@ svm.marginOne('今日子ちゃんは雨が好き') // => ０より高いか低�
 
 ===
 
+### デモ
+
+===
+
 ### でも振り分けムズい
 - 自分の中での「興味がある」の定義が日ごとにブレる
 - 文字読んで振り分けるのは脳が疲れる。。。
   - 画像の振り分けのほうが直感的なのかも仮説
-- 自然言語の教師データは手でつけるより生成した方が良さそう
-- それか学習済みデータとか。
+- 自然言語の教師データは手作りより生成した方が良い？
+- それか学習済みモデル使うか
 
 ===
 
@@ -263,12 +267,109 @@ svm.marginOne('今日子ちゃんは雨が好き') // => ０より高いか低�
 
 ===
 
-### AWS dynamodb気難しい。。
+lambdaの定義
+```yaml
+LambdaCreateModel:
+  Type: AWS::Lambda::Function
+  Properties:
+    Code: ./dist/lambda
+    Handler: bundle.createModel
+    Role: !GetAtt LambdaRole.Arn
+    Runtime: nodejs8.10
+    Environment:
+      Variables:
+        BUCKET_NAME: !Ref BucketName
+    MemorySize: 512
+    Timeout: 300
+```
+
+===
+
+roleの定義
+```yaml
+LambdaRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Statement:
+        - Effect: Allow
+          Action: [ "sts:AssumeRole" ]
+          Principal:
+            Service: [ lambda.amazonaws.com ]
+    Path: /
+    ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+      - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+      - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+```
+
+===
+
+lambdaを定期実行する定義
+```yaml
+EventRuleForFetchTweets:
+  Type: AWS::Events::Rule
+  Properties:
+    ScheduleExpression: 'cron(0/15 * * * ? *)'
+    Targets:
+      - Arn: !GetAtt 'LambdaFetchTweets.Arn'
+        Id: !Ref 'LambdaFetchTweets'
+LambdaPermissionForEventsToInvokeLambda:
+  Type: AWS::Lambda::Permission
+  Properties:
+    FunctionName: !Ref 'LambdaFetchTweets'
+    Action: lambda:InvokeFunction
+    Principal: events.amazonaws.com
+    SourceArn: !GetAtt 'EventRuleForFetchTweets.Arn'
+```
+
+===
+
+Cognitoの定義。
+
+コレのお陰でアプリから直接dynamodbいじれる
+```yaml
+IdentityPool:
+  Type: AWS::Cognito::IdentityPool
+  Properties:
+    AllowUnauthenticatedIdentities: true
+
+RoleAttachment:
+  Type: AWS::Cognito::IdentityPoolRoleAttachment
+  Properties:
+    IdentityPoolId: !Ref IdentityPool
+    Roles:
+      unauthenticated: !GetAtt 'AppRole.Arn'
+```
+けどプロダクト利用はおすすめできない。。。
+
+===
+
+### dynamodb気難しい。。
 - 検索がむずい
   - 結局 `x is null` の検索できんかった。。。
   - (教えて欲しい)
 - secondary index付ける毎に無料枠無料枠超えないかビビる
   - (結果全然余裕だったけど)
+
+===
+
+### jsで機械学習
+- nampyの対抗として[numjs](https://www.npmjs.com/package/numjs)というのを見つけた
+- でもjsは数字弱い
+  - 80.7 - 10.1 => 70.60000000000001
+- でも機械学習って細かい数字の誤差は吸収される気がする🤔
+- まぁ学習はgoogle Colaboratoryでpython使ってやれば良さそう😇
+- 学習済みモデルの利用はjsでもできる
+  - svm, [tensorflow.js](https://js.tensorflow.org/)
+
+===
+
+### lambdaで機械学習
+- 5分タイムアウトに引っかかるよ！
+- (知ってた。)
+- 無理してlambda使う意味はないね！
+- google Colaboratory, pythonでおｋ
 
 ===
 
@@ -287,23 +388,12 @@ svm.marginOne('今日子ちゃんは雨が好き') // => ０より高いか低�
 
 ===
 
-### jsで機械学習
-- nampyの対抗として[numjs](https://www.npmjs.com/package/numjs)というのを見つけた
-- でもjsは数字弱い
-  - 80.7 - 10.1 => 70.60000000000001
-- でも機械学習って細かい数字の誤差は吸収される気がする🤔
-- まぁ学習はgoogle Colaboratoryでpython使ってやれば良さそう😇
-- 学習済みモデルの利用はjsでも良さそう
-  - svm, [tensorflow.js](https://js.tensorflow.org/)
-
-===
-
 # まとめ
 
 ===
 
+- expoらくちん
 - CFnよい
-- EXPOよい
 - dynamodbをメインDBで使うのムズそう
 - kuromoji楽しい
 - jsでの機械学習は(いちおう)できそう
