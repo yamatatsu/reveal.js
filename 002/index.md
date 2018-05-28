@@ -244,7 +244,9 @@ svm.marginOne('今日子ちゃんは雨が好き') // => ０より高いか低�
 
 ===
 
-### デモ
+デモ
+
+<a href="https://gyazo.com/a70fc37a05500dd172a525ecf4f73274"><img src="https://i.gyazo.com/a70fc37a05500dd172a525ecf4f73274.png" alt="https://gyazo.com/a70fc37a05500dd172a525ecf4f73274" width="280"/></a>
 
 ===
 
@@ -325,9 +327,7 @@ LambdaPermissionForEventsToInvokeLambda:
 
 ===
 
-Cognitoの定義。
-
-コレのお陰でアプリから直接dynamodbいじれる
+Cognitoの定義
 ```yaml
 IdentityPool:
   Type: AWS::Cognito::IdentityPool
@@ -341,7 +341,6 @@ RoleAttachment:
     Roles:
       unauthenticated: !GetAtt 'AppRole.Arn'
 ```
-けどプロダクト利用はおすすめできない。。。
 
 ===
 
@@ -354,11 +353,17 @@ RoleAttachment:
 
 ===
 
+### SVMについて
+- 機械学習ムツカシイ
+- trainメソッドにはいろんなオプションがある
+- 根本理解が必要そう
+
+===
+
 ### jsで機械学習
 - nampyの対抗として[numjs](https://www.npmjs.com/package/numjs)というのを見つけた
 - でもjsは数字弱い
   - 80.7 - 10.1 => 70.60000000000001
-- でも機械学習って細かい数字の誤差は吸収される気がする🤔
 - まぁ学習はgoogle Colaboratoryでpython使ってやれば良さそう😇
 - 学習済みモデルの利用はjsでもできる
   - svm, [tensorflow.js](https://js.tensorflow.org/)
@@ -396,7 +401,12 @@ RoleAttachment:
 - CFnよい
 - dynamodbをメインDBで使うのムズそう
 - kuromoji楽しい
-- jsでの機械学習は(いちおう)できそう
+- 「学習済みモデル使えればいいんじゃね？」
+
+===
+
+## 感想
+今度は学習済みデータ使ってラクして遊びたい 😇
 
 ===
 
