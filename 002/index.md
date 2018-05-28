@@ -415,6 +415,7 @@ https://github.com/yamatatsu/twitter-filter
 
 - CFnなので簡単に構築できます
 - expoもそんなに手間なく試せると思います
+- エイヤッと書いたままで汚いとこも多いかもですが。とくにアプリ
 
 ===
 
